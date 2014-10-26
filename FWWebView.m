@@ -390,12 +390,12 @@ NSString* const onLoadFuncName = @"iosOnLoad";
         }
         // アプリケーションの起動
         if([self isApplicationURL:url]){
-            [APP openURL:[NSURL URLWithString:url]];
+            [([UIApplication sharedApplication]) openURL:[NSURL URLWithString:url]];
         }
         // 外部サイトの場合、Safariを起動
         if(([url indexOf:@"http://"] == 0) || ([url indexOf:@"https://"] == 0)){
             if(self.openURLBrowser){
-                [APP openURL:[NSURL URLWithString:url]];
+                [([UIApplication sharedApplication]) openURL:[NSURL URLWithString:url]];
                 return NO;
             }
         }

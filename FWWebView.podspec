@@ -9,9 +9,9 @@ Pod::Spec.new do |s|
   s.authors      = {'ateliee' => 'info@ateliee.com'}
   s.homepage     = 'https://github.com/ateliee/FWWebView'
   s.license      = 'MIT'
-  s.platform     = :ios
+  s.platform     = :ios, '5.0'
   s.source       = { :git => 'git@github.com:ateliee/FWWebView.git', :tag => '1.0.0' }
   s.source_files  = 'Classes', '*.{h,m}'
   s.requires_arc  = true
-  s.dependencies = { 'IOSHelper' =>   '~> 0.1.3' }
+  s.dependencies = { 'IOSHelper' =>   '~> 0.1.3' }  
 end

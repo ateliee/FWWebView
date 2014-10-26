@@ -11,7 +11,7 @@
 
 @protocol  FWWebViewCallback;
 
-@interface FWWebView : UIWebView<UIWebViewDelegate>{
+@interface FWWebView : UIWebView<UIWebViewDelegate,UIScrollViewDelegate>{
     // アクション時の呼び出しクラス
     id<FWWebViewCallback> callback;
     // 現在のリクエスト

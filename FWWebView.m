@@ -21,6 +21,12 @@
     
     NSTimer *loadedTimer;
     NSDate *loadStartDate;
+    
+    // scrollViewの不具合対策用
+    BOOL showKeyboard;
+    BOOL pauseScroll;
+    CGPoint scrollOrigin;
+    CGPoint defaultScrollOrigin;
 }
 // 初期化
 -(void) initalization;
@@ -66,6 +72,37 @@ NSString* const onLoadFuncName = @"iosOnLoad";
     // タイムアウト設定
     self.timeOut = 10;
     loadedTimer = nil;
+    
+    [self.scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow) name:UIKeyboardDidShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide) name:UIKeyboardWillHideNotification object:nil];
+}
+-(void) keyboardWillShow{
+    if (!showKeyboard) {
+        defaultScrollOrigin = self.scrollView.contentOffset;
+    }
+    showKeyboard = YES;
+}
+-(void) keyboardDidShow{
+    //pauseScroll = NO;
+    pauseScroll = YES;
+}
+-(void) keyboardWillHide{
+    pauseScroll = NO;
+    showKeyboard = NO;
+    [self.scrollView setContentOffset:defaultScrollOrigin animated:YES];
+}
+
+-(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
+    if (showKeyboard) {
+        if (pauseScroll) {
+            [self.scrollView setContentOffset:scrollOrigin animated:NO];
+        }else{
+            scrollOrigin = self.scrollView.contentOffset;
+            pauseScroll = YES;
+        }
+    }
 }
 -(id)init{
     self = [super init];
@@ -129,6 +166,13 @@ NSString* const onLoadFuncName = @"iosOnLoad";
 }
 // スクロールデリゲート
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    
+    /*//scrollView.bounds = webView.bounds;
+     if (pauseScroll) {
+     NSLog(@"%f,%f",scrollView.contentOffset.x,scrollView.contentOffset.y);
+     [scrollView setContentOffset:scrollOrigin animated:NO];
+     }*/
+    /*
     // 水平スクロール制御
     if(!self.scrollView.showsHorizontalScrollIndicator){
         CGPoint origin = [scrollView contentOffset];
@@ -138,7 +182,7 @@ NSString* const onLoadFuncName = @"iosOnLoad";
     if(!self.scrollView.showsVerticalScrollIndicator){
         CGPoint origin = [scrollView contentOffset];
         [scrollView setContentOffset:CGPointMake(origin.x, 0.0)];
-    }
+    }*/
 }
 // ページの読み込み
 -(void)load:(NSString *)url{

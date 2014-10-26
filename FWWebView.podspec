@@ -13,4 +13,5 @@ Pod::Spec.new do |s|
   s.source       = { :git => 'git@github.com:ateliee/FWWebView.git', :tag => '1.0.0' }
   s.source_files  = 'Classes', '*.{h,m}'
   s.requires_arc  = true
+  s.dependencies = { 'IOSHelper' =>   '~> 0.1.3' }
 end

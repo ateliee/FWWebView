@@ -7,8 +7,6 @@
 //
 
 #import "FWWebView.h"
-#import "define.h"
-
 
 @interface FWWebView(){
     // 呼び出し回数をカウント
@@ -179,7 +177,7 @@ NSString* const onLoadFuncName = @"iosOnLoad";
     
     if(self.clearCacheLoading){
         [req setCachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData];
-        [Utility removeCache];
+        [self removeCache];
     }else{
         [req setCachePolicy:defaultCachePolicy];
     }
@@ -249,12 +247,24 @@ NSString* const onLoadFuncName = @"iosOnLoad";
     return FALSE;
 }
 
+// キャッシュクリア
+-(void) removeCache{
+    // キャッシュ容量を０に変更
+    [[NSURLCache sharedURLCache] setMemoryCapacity:0];
+    // キャッシュ削除
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    // キャッシュ削除
+    NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:0 diskCapacity:0 diskPath:nil];
+    [NSURLCache setSharedURLCache:sharedCache];
+    //[sharedCache release];
+}
+
 // HTML読み込み時に呼ばれる
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType{
     
     // キャッシュファイルの削除
     if(self.clearCacheLoading){
-        [Utility removeCache];
+        [self removeCache];
         // キャッシュポリシーの変更
         if(request.cachePolicy != NSURLRequestReloadIgnoringLocalAndRemoteCacheData){
             //NSMutableURLRequest *req = (NSMutableURLRequest *)request;
@@ -355,7 +365,7 @@ NSString* const onLoadFuncName = @"iosOnLoad";
             params = p;
         }
         if(![method isEqualToString:@""]){
-            dbgLog(@"call JS : function[%@] params[%@]",method,params);
+            //dbgLog(@"call JS : function[%@] params[%@]",method,params);
             // メソッドのコール
             if(callback){
                 // デリゲートメソッドを呼び出し

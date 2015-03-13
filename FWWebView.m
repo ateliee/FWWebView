@@ -34,7 +34,7 @@
 
 @implementation FWWebView
 
-NSString* const onLoadFuncName = @"iosOnLoad";
+#define FWWEBVIEW_ONLOADFUNCNAME (@"iosOnLoad")
 
 @synthesize js_key;
 @synthesize callback;
@@ -164,15 +164,13 @@ NSString* const onLoadFuncName = @"iosOnLoad";
 -(void)setScrollVertical:(BOOL)enable{
     self.scrollView.showsVerticalScrollIndicator = enable;
 }
-// スクロールデリゲート
+/*// スクロールデリゲート
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    
-    /*//scrollView.bounds = webView.bounds;
-     if (pauseScroll) {
-     NSLog(@"%f,%f",scrollView.contentOffset.x,scrollView.contentOffset.y);
-     [scrollView setContentOffset:scrollOrigin animated:NO];
-     }*/
-    /*
+    //scrollView.bounds = webView.bounds;
+    if (pauseScroll) {
+        NSLog(@"%f,%f",scrollView.contentOffset.x,scrollView.contentOffset.y);
+        [scrollView setContentOffset:scrollOrigin animated:NO];
+    }
     // 水平スクロール制御
     if(!self.scrollView.showsHorizontalScrollIndicator){
         CGPoint origin = [scrollView contentOffset];
@@ -182,8 +180,8 @@ NSString* const onLoadFuncName = @"iosOnLoad";
     if(!self.scrollView.showsVerticalScrollIndicator){
         CGPoint origin = [scrollView contentOffset];
         [scrollView setContentOffset:CGPointMake(origin.x, 0.0)];
-    }*/
-}
+    }
+}*/
 // ページの読み込み
 -(void)load:(NSString *)url{
     [self loadEX:url method:@"GET" data:nil];
@@ -230,8 +228,10 @@ NSString* const onLoadFuncName = @"iosOnLoad";
     [req setValue:[self stringByEvaluatingJavaScriptFromString:@"window.navigator.userAgent"] forHTTPHeaderField:@"User-Agent"];
     
     // カスタムヘッダー
-    if([callback respondsToSelector:@selector(callWebViewCustomHeader:request:)]){
-        [callback callWebViewCustomHeader:self request:req];
+    if(callback){
+        if([callback respondsToSelector:@selector(callWebViewCustomHeader:request:)]){
+            [callback callWebViewCustomHeader:self request:req];
+        }
     }
     
     // リクエストされたURLを保存
@@ -319,7 +319,7 @@ NSString* const onLoadFuncName = @"iosOnLoad";
     BOOL isFrame = ![[[request URL] absoluteString] isEqualToString:[[request mainDocumentURL] absoluteString]];
     if(!isFrame){
         // デリゲートメソッドを呼び出し
-        if([callback respondsToSelector:@selector(callWebViewStartLoadWithRequest:request:navigationType:)]){
+        if(callback && [callback respondsToSelector:@selector(callWebViewStartLoadWithRequest:request:navigationType:)]){
             return [callback callWebViewStartLoadWithRequest:self request:request navigationType:navigationType];
         }
     }
@@ -429,7 +429,7 @@ NSString* const onLoadFuncName = @"iosOnLoad";
         // リクエストからURL文字列取得
         NSString* url = [[request URL] relativeString];
         // 読み込みをハックする
-        if([callback respondsToSelector:@selector(bindWebViewClickURL:request:)]){
+        if(callback && [callback respondsToSelector:@selector(bindWebViewClickURL:request:)]){
             return [callback bindWebViewClickURL:self request:request];
         }
         // アプリケーションの起動
@@ -448,7 +448,7 @@ NSString* const onLoadFuncName = @"iosOnLoad";
             return YES;
         }
         // 読み込みをハックする
-        if([callback respondsToSelector:@selector(callWebViewRequestURL:request:)]){
+        if(callback && [callback respondsToSelector:@selector(callWebViewRequestURL:request:)]){
             return [callback callWebViewRequestURL:self request:request];
         }
     }
@@ -481,11 +481,11 @@ NSString* const onLoadFuncName = @"iosOnLoad";
     retainCount --;
     // デリゲートメソッドを呼び出し
     if(retainCount == 0){
-        if([callback respondsToSelector:@selector(callWebViewDidFailLoadWithError:error:)]){
+        if(callback && [callback respondsToSelector:@selector(callWebViewDidFailLoadWithError:error:)]){
             [callback callWebViewDidFailLoadWithError:(FWWebView *)webView error:error];
         }
         // タイムアウト
-        if([callback respondsToSelector:@selector(callWebViewFailOnLoaded:)]){
+        if(callback && [callback respondsToSelector:@selector(callWebViewFailOnLoaded:)]){
             [callback callWebViewFailOnLoaded:self];
         }
     }
@@ -493,7 +493,7 @@ NSString* const onLoadFuncName = @"iosOnLoad";
 // ページが読み込まれた直後
 -(void)finishWebPage{
     // デリゲートメソッドの実行
-    if([callback respondsToSelector:@selector(callWebViewDidFinishLoad:)]){
+    if(callback && [callback respondsToSelector:@selector(callWebViewDidFinishLoad:)]){
         [callback callWebViewDidFinishLoad:self];
     }
     // イベント追加
@@ -501,7 +501,7 @@ NSString* const onLoadFuncName = @"iosOnLoad";
     "if(typeof window.addEventListener != \"undefined\"){ window.addEventListener(\"load\",iosOnLoad,false); }"
     "else if(typeof window.attachEvent != \"undefined\")"
     "{ window.attachEvent(\"onload\",iosOnLoad); } ";
-    js = [[NSString alloc] initWithFormat:js,onLoadFuncName,onLoadFuncName,onLoadFuncName,onLoadFuncName];
+    js = [[NSString alloc] initWithFormat:js,FWWEBVIEW_ONLOADFUNCNAME,FWWEBVIEW_ONLOADFUNCNAME,FWWEBVIEW_ONLOADFUNCNAME,FWWEBVIEW_ONLOADFUNCNAME];
     [self stringByEvaluatingJavaScriptFromString:js];
     
     // タイマー設定
@@ -515,17 +515,17 @@ NSString* const onLoadFuncName = @"iosOnLoad";
 // 読み込み完了をチェック
 -(void)documentLoadedCheck{
     float tmp = [[NSDate date] timeIntervalSinceDate: loadStartDate];
-    if ([self stringByEvaluatingJavaScriptFromString:[[NSString alloc] initWithFormat:@"window.%@",onLoadFuncName]]) {
+    if ([self stringByEvaluatingJavaScriptFromString:[[NSString alloc] initWithFormat:@"window.%@",FWWEBVIEW_ONLOADFUNCNAME]]) {
         documentLoaded = YES;
         [loadedTimer invalidate];
         loadedTimer = nil;
         
-        if([callback respondsToSelector:@selector(callWebViewOnLoaded:)]){
+        if(callback && [callback respondsToSelector:@selector(callWebViewOnLoaded:)]){
             [callback callWebViewOnLoaded:self];
         }
     }else if(tmp >= timeOut){
         // タイムアウト
-        if([callback respondsToSelector:@selector(callWebViewFailOnLoaded:)]){
+        if(callback && [callback respondsToSelector:@selector(callWebViewFailOnLoaded:)]){
             [callback callWebViewFailOnLoaded:self];
         }
     }
@@ -554,7 +554,7 @@ NSString* const onLoadFuncName = @"iosOnLoad";
     BOOL error = NO;
     if([response isKindOfClass:[NSHTTPURLResponse class]]){
         NSInteger status = [((NSHTTPURLResponse *)response) statusCode];
-        if([callback respondsToSelector:@selector(callWebViewDidRequestStatus:status:)]){
+        if(callback && [callback respondsToSelector:@selector(callWebViewDidRequestStatus:status:)]){
             error = [callback callWebViewDidRequestStatus:self status:status];
         }else{
             // 400番代以上はエラー
@@ -582,11 +582,11 @@ NSString* const onLoadFuncName = @"iosOnLoad";
     Connection = nil;
     ConnectionData = nil;
     // コネクションエラー
-    if([callback respondsToSelector:@selector(callWebViewDidFailLoadWithError:error:)]){
+    if(callback && [callback respondsToSelector:@selector(callWebViewDidFailLoadWithError:error:)]){
         [callback callWebViewDidFailLoadWithError:self error:error];
     }
     // タイムアウト
-    if([callback respondsToSelector:@selector(callWebViewFailOnLoaded:)]){
+    if(callback && [callback respondsToSelector:@selector(callWebViewFailOnLoaded:)]){
         [callback callWebViewFailOnLoaded:self];
     }
 }

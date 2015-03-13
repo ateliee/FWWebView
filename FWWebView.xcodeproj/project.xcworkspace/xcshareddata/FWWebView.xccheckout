@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>45C1894A-46CB-4CB3-B2A6-17F81813D466</string>
+	<key>IDESourceControlProjectName</key>
+	<string>FWWebView</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D7BDE7EF158BC3826D044BC41011F7ED386D1BB3</key>
+		<string>github.com:ateliee/FWWebView.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>FWWebView.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D7BDE7EF158BC3826D044BC41011F7ED386D1BB3</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:ateliee/FWWebView.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D7BDE7EF158BC3826D044BC41011F7ED386D1BB3</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D7BDE7EF158BC3826D044BC41011F7ED386D1BB3</string>
+			<key>IDESourceControlWCCName</key>
+			<string>FWWebView</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -1,0 +1,74 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXFileReference section */
+		905F4C7E1AB2ED110004047C /* FWWebView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FWWebView.h; sourceTree = "<group>"; };
+		905F4C7F1AB2ED110004047C /* FWWebView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FWWebView.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		905F4C771AB2EC8C0004047C = {
+			isa = PBXGroup;
+			children = (
+				905F4C7E1AB2ED110004047C /* FWWebView.h */,
+				905F4C7F1AB2ED110004047C /* FWWebView.m */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		905F4C781AB2EC8C0004047C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+			};
+			buildConfigurationList = 905F4C7B1AB2EC8C0004047C /* Build configuration list for PBXProject "FWWebView" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 905F4C771AB2EC8C0004047C;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		905F4C7C1AB2EC8C0004047C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		905F4C7D1AB2EC8C0004047C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		905F4C7B1AB2EC8C0004047C /* Build configuration list for PBXProject "FWWebView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				905F4C7C1AB2EC8C0004047C /* Debug */,
+				905F4C7D1AB2EC8C0004047C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 905F4C781AB2EC8C0004047C /* Project object */;
+}

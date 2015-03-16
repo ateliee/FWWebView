@@ -217,7 +217,7 @@
 -(void)loadRequestEX:(NSURLRequest *)request{
     NSMutableURLRequest *req = [request mutableCopy];
     
-    if(self.clearCacheLoading){
+    if(self.clearCacheLoading || ([request.HTTPMethod caseInsensitiveCompare:@"POST"])){
         [req setCachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData];
         [self removeCache];
     }else{

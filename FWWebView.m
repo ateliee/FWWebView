@@ -165,23 +165,23 @@
     self.scrollView.showsVerticalScrollIndicator = enable;
 }
 /*// スクロールデリゲート
--(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    //scrollView.bounds = webView.bounds;
-    if (pauseScroll) {
-        NSLog(@"%f,%f",scrollView.contentOffset.x,scrollView.contentOffset.y);
-        [scrollView setContentOffset:scrollOrigin animated:NO];
-    }
-    // 水平スクロール制御
-    if(!self.scrollView.showsHorizontalScrollIndicator){
-        CGPoint origin = [scrollView contentOffset];
-        [scrollView setContentOffset:CGPointMake(0.0,origin.y)];
-    }
-    // 垂直スクロール制御
-    if(!self.scrollView.showsVerticalScrollIndicator){
-        CGPoint origin = [scrollView contentOffset];
-        [scrollView setContentOffset:CGPointMake(origin.x, 0.0)];
-    }
-}*/
+ -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+ //scrollView.bounds = webView.bounds;
+ if (pauseScroll) {
+ NSLog(@"%f,%f",scrollView.contentOffset.x,scrollView.contentOffset.y);
+ [scrollView setContentOffset:scrollOrigin animated:NO];
+ }
+ // 水平スクロール制御
+ if(!self.scrollView.showsHorizontalScrollIndicator){
+ CGPoint origin = [scrollView contentOffset];
+ [scrollView setContentOffset:CGPointMake(0.0,origin.y)];
+ }
+ // 垂直スクロール制御
+ if(!self.scrollView.showsVerticalScrollIndicator){
+ CGPoint origin = [scrollView contentOffset];
+ [scrollView setContentOffset:CGPointMake(origin.x, 0.0)];
+ }
+ }*/
 // ページの読み込み
 -(void)load:(NSString *)url{
     [self loadEX:url method:@"GET" data:nil];
@@ -303,6 +303,60 @@
     //[sharedCache release];
 }
 
+// パラメータを解析
+-(NSArray *) componentsSeparatedParamaters: (NSString*)str{
+    NSMutableArray* params = [[NSMutableArray alloc]init];
+    NSUInteger length = [str length];
+    NSString* tmp = @"";
+    for (int i=0; i<length; i++) {
+        NSString* s = [str substringWithRange:NSMakeRange(i,1)];
+        if ([s isEqualToString:@"'"]) {
+            int j = i + 1;
+            for (; j<length; j++) {
+                s = [str substringWithRange:NSMakeRange(j,1)];
+                if ([s isEqualToString:@"'"]) {
+                    NSString* t = [NSString stringWithString:tmp];
+                    [params addObject:t];
+                    tmp = @"";
+                    break;
+                }
+                tmp = [tmp stringByAppendingString:s];
+            }
+            i = j;
+        }else if([s isEqualToString:@"\""]){
+            int j = i + 1;
+            for (; j<length; j++) {
+                s = [str substringWithRange:NSMakeRange(j,1)];
+                if ([s isEqualToString:@"\""]) {
+                    NSString* t = [NSString stringWithString:tmp];
+                    [params addObject:t];
+                    tmp = @"";
+                    break;
+                }
+                tmp = [tmp stringByAppendingString:s];
+            }
+            i = j;
+        }else if([s isEqualToString:@","]){
+            if (![tmp isEqualToString:@""]) {
+                NSString* t = [NSString stringWithString:tmp];
+                [params addObject:t];
+                tmp = @"";
+            }
+        }else{
+            tmp = [tmp stringByAppendingString:s];
+        }
+    }
+    if ([tmp length] > 0) {
+        [params addObject:tmp];
+    }
+    NSLog(@"%@",str);
+    NSLog(@"%@",tmp);
+    for (int i = 0;i<[params count];i++) {
+        NSLog(@"(%d) : %@",i,params[i]);
+    }
+    return params;
+}
+
 // HTML読み込み時に呼ばれる
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType{
     
@@ -373,30 +427,31 @@
                     method = [urlStr substringWithRange:[match rangeAtIndex:1]];
                     NSString *paramsStr = [urlStr substringWithRange:[match rangeAtIndex:2]];
                     if(![paramsStr isEqualToString:@""]){
-                        NSArray* pp = [paramsStr componentsSeparatedByString:@","];
-                        NSMutableArray* p = [[NSMutableArray alloc] init];
-                        NSString *tmp = @"";
-                        for (NSString* s in pp) {
-                            NSString* t = [NSString stringWithString:s];
-                            if (![tmp isEqualToString:@""]) {
-                                t = [NSString stringWithFormat:@"%@,%@",tmp,t];
-                            }
-                            BOOL dc = ([t hasPrefix:@"\""] && [t hasSuffix:@"\""]);
-                            BOOL sc = ([t hasPrefix:@"'"] && [t hasSuffix:@"'"]);
-                            if (dc || sc) {
-                                t = [t substringWithRange:NSMakeRange(1, [t length] - 2)];
-                                [p addObject:t];
-                                tmp = @"";
-                            }else if ([t hasPrefix:@"\""] || [t hasPrefix:@"'"]) {
-                                tmp = t;
-                            }else{
-                                [p addObject:t];
-                            }
-                        }
-                        if (![tmp isEqualToString:@""]) {
-                            [p addObject:tmp];
-                        }
-                        params = [[NSArray alloc] initWithArray:p];
+                        params = [self componentsSeparatedParamaters:paramsStr];
+                        /*
+                         NSMutableArray* p = [[NSMutableArray alloc] init];
+                         NSString *tmp = @"";
+                         for (NSString* s in pp) {
+                         NSString* t = [NSString stringWithString:s];
+                         if (![tmp isEqualToString:@""]) {
+                         t = [NSString stringWithFormat:@"%@,%@",tmp,t];
+                         }
+                         BOOL dc = ([t hasPrefix:@"\""] && [t hasSuffix:@"\""]);
+                         BOOL sc = ([t hasPrefix:@"'"] && [t hasSuffix:@"'"]);
+                         if (dc || sc) {
+                         t = [t substringWithRange:NSMakeRange(1, [t length] - 2)];
+                         [p addObject:t];
+                         tmp = @"";
+                         }else if ([t hasPrefix:@"\""] || [t hasPrefix:@"'"]) {
+                         tmp = t;
+                         }else{
+                         [p addObject:t];
+                         }
+                         }
+                         if (![tmp isEqualToString:@""]) {
+                         [p addObject:tmp];
+                         }
+                         params = [[NSArray alloc] initWithArray:p];*/
                     }
                 }
             }
@@ -461,7 +516,7 @@
     // アプリケーションの起動
     if([url indexOf:@"mailto:"] == 0){
         return YES;
-    // GoogleMap起動
+        // GoogleMap起動
     }else if([url indexOf:@"comgooglemaps:"] == 0){
         return YES;
     }

@@ -11,6 +11,7 @@
 @interface FWWebView(){
     // 呼び出し回数をカウント
     int retainCount;
+    BOOL blankLoad;
     // コネクションクラス
     NSURLConnection *Connection;
     NSMutableData *ConnectionData;
@@ -349,11 +350,6 @@
     if ([tmp length] > 0) {
         [params addObject:tmp];
     }
-    NSLog(@"%@",str);
-    NSLog(@"%@",tmp);
-    for (int i = 0;i<[params count];i++) {
-        NSLog(@"(%d) : %@",i,params[i]);
-    }
     return params;
 }
 
@@ -527,7 +523,9 @@
 -(void)webViewDidFinishLoad:(UIWebView *)webView{
     retainCount --;
     // デリゲートメソッドを呼び出し
-    if(retainCount == 0){
+    if (blankLoad) {
+        blankLoad = FALSE;
+    }else if(retainCount == 0){
         [((FWWebView *)webView) finishWebPage];
     }
 }
@@ -535,7 +533,9 @@
 -(void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error{
     retainCount --;
     // デリゲートメソッドを呼び出し
-    if(retainCount == 0){
+    if (blankLoad) {
+        blankLoad = FALSE;
+    }else if(retainCount == 0){
         if(callback && [callback respondsToSelector:@selector(callWebViewDidFailLoadWithError:error:)]){
             [callback callWebViewDidFailLoadWithError:(FWWebView *)webView error:error];
         }
@@ -553,10 +553,10 @@
     }
     // イベント追加
     NSString *js = @"if(%@Func == undefined){ function %@Func(){ window.%@=TRUE; } } window.%@=FALSE; "
-    "if(typeof window.addEventListener != \"undefined\"){ window.addEventListener(\"load\",iosOnLoad,false); }"
+    "if(typeof window.addEventListener != \"undefined\"){ window.addEventListener(\"load\",%@,false); }"
     "else if(typeof window.attachEvent != \"undefined\")"
-    "{ window.attachEvent(\"onload\",iosOnLoad); } ";
-    js = [[NSString alloc] initWithFormat:js,FWWEBVIEW_ONLOADFUNCNAME,FWWEBVIEW_ONLOADFUNCNAME,FWWEBVIEW_ONLOADFUNCNAME,FWWEBVIEW_ONLOADFUNCNAME];
+    "{ window.attachEvent(\"onload\",%@); } ";
+    js = [[NSString alloc] initWithFormat:js,FWWEBVIEW_ONLOADFUNCNAME,FWWEBVIEW_ONLOADFUNCNAME,FWWEBVIEW_ONLOADFUNCNAME,FWWEBVIEW_ONLOADFUNCNAME,FWWEBVIEW_ONLOADFUNCNAME,FWWEBVIEW_ONLOADFUNCNAME];
     [self stringByEvaluatingJavaScriptFromString:js];
     
     // タイマー設定
@@ -592,7 +592,8 @@
 }
 // 画面をクリア
 -(void)blank{
-    [self loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"about:nlank"]]];
+    blankLoad = TRUE;
+    [self loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"about:blank"]]];
 }
 /*
  // Only override drawRect: if you perform custom drawing.
@@ -654,6 +655,6 @@
     Connection = nil;
     ConnectionData = nil;
     
-    [self finishWebPage];
+    //[self finishWebPage];
 }
 @end

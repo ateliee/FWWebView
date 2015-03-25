@@ -36,6 +36,7 @@
 @implementation FWWebView
 
 #define FWWEBVIEW_ONLOADFUNCNAME (@"iosOnLoad")
+#define FWWEBVIEW_OBSERVER_OFFSET (@"contentOffset")
 
 @synthesize js_key;
 @synthesize callback;
@@ -51,6 +52,7 @@
 }
 -(void) dealloc{
     self.delegate = nil;
+    [self.scrollView removeObserver:self forKeyPath:FWWEBVIEW_OBSERVER_OFFSET];
 }
 // 初期化
 -(void) initalization{
@@ -74,7 +76,7 @@
     self.timeOut = 10;
     loadedTimer = nil;
     
-    [self.scrollView addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
+    [self.scrollView addObserver:self forKeyPath:FWWEBVIEW_OBSERVER_OFFSET options:NSKeyValueObservingOptionNew context:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide) name:UIKeyboardWillHideNotification object:nil];

@@ -42,6 +42,7 @@
 @synthesize callback;
 @synthesize callMethodJSEnable;
 @synthesize timeOut;
+@synthesize userAgent;
 @synthesize clearCacheLoading;
 @synthesize defaultCachePolicy;
 @synthesize openURLBrowser;
@@ -74,6 +75,7 @@
     [self setTransparentBackground];
     // タイムアウト設定
     self.timeOut = 10;
+    self.userAgent = [self stringByEvaluatingJavaScriptFromString:@"window.navigator.userAgent"];
     loadedTimer = nil;
     
     [self.scrollView addObserver:self forKeyPath:FWWEBVIEW_OBSERVER_OFFSET options:NSKeyValueObservingOptionNew context:nil];
@@ -228,7 +230,9 @@
     }
     // タイムアウト設定
     [req setTimeoutInterval:self.timeOut];
-    [req setValue:[self stringByEvaluatingJavaScriptFromString:@"window.navigator.userAgent"] forHTTPHeaderField:@"User-Agent"];
+    if ([[req allHTTPHeaderFields] objectForKey:@"User-Agent"] == nil) {
+        [req setValue:self.userAgent forHTTPHeaderField:@"User-Agent"];
+    }
     
     // カスタムヘッダー
     if(callback){

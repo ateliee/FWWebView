@@ -21,6 +21,8 @@
     NSString *js_key;
     // タイムアウト
     int timeOut;
+    // ユーザーエージェント
+    NSString* userAgent;
     // JSからのメソッド呼び出し許可
     BOOL callMethodJSEnable;
     // 読み込み時にキャッシュクリアするか（デフォルトはYES）
@@ -37,6 +39,7 @@
 @property(nonatomic) BOOL clearCacheLoading;
 @property(nonatomic) NSURLRequestCachePolicy defaultCachePolicy;
 @property(nonatomic) int timeOut;
+@property(nonatomic) NSString* userAgent;
 @property(nonatomic) BOOL callMethodJSEnable;
 @property(nonatomic) BOOL openURLBrowser;
 @property(nonatomic) BOOL documentLoaded;

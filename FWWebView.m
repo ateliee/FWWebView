@@ -483,7 +483,7 @@
         return YES;
     }
     // クリック時
-    if(navigationType == UIWebViewNavigationTypeLinkClicked || navigationType == UIWebViewNavigationTypeFormSubmitted){
+    if(navigationType == UIWebViewNavigationTypeLinkClicked || navigationType == UIWebViewNavigationTypeFormSubmitted || navigationType == UIWebViewNavigationTypeOther){
         // リクエストからURL文字列取得
         NSString* url = [[request URL] relativeString];
         // 読み込みをハックする

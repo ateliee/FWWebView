@@ -63,6 +63,7 @@
     self.clearCacheLoading = YES;
     self.defaultCachePolicy = NSURLRequestReturnCacheDataElseLoad;
     self.openURLBrowser = YES;
+    self.iFrameSkip = YES;
     // デリゲートを指定
     self.delegate = self;
     // 跳ね返り時の影を削除
@@ -478,7 +479,7 @@
             return NO;
         }
     }
-    if (isFrame) {
+    if (isFrame && _iFrameSkip) {
         return YES;
     }
     // クリック時

@@ -43,6 +43,7 @@
 @property(nonatomic) BOOL callMethodJSEnable;
 @property(nonatomic) BOOL openURLBrowser;
 @property(nonatomic) BOOL documentLoaded;
+@property(nonatomic) BOOL iFrameSkip;
 
 // 現在のURL
 -(NSString*) nowURL;

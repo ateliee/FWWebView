@@ -483,35 +483,42 @@
         return YES;
     }
     // クリック時
+    BOOL result = YES;
     if(navigationType == UIWebViewNavigationTypeLinkClicked || navigationType == UIWebViewNavigationTypeFormSubmitted || navigationType == UIWebViewNavigationTypeOther){
         // リクエストからURL文字列取得
         NSString* url = [[request URL] relativeString];
         // 読み込みをハックする
         if(callback && [callback respondsToSelector:@selector(bindWebViewClickURL:request:navigationType:)]){
-            return [callback bindWebViewClickURL:self request:request navigationType:navigationType];
-        }
-        // アプリケーションの起動
-        if([self isApplicationURL:url]){
-            [([UIApplication sharedApplication]) openURL:[NSURL URLWithString:url]];
-        }
-        // 外部サイトの場合、Safariを起動
-        if(([url indexOf:@"http://"] == 0) || ([url indexOf:@"https://"] == 0)){
-            if(self.openURLBrowser){
+            result = [callback bindWebViewClickURL:self request:request navigationType:navigationType];
+        }else{
+            // アプリケーションの起動
+            if([self isApplicationURL:url]){
                 [([UIApplication sharedApplication]) openURL:[NSURL URLWithString:url]];
-                return NO;
+                result = NO;
+            }
+            // 外部サイトの場合、Safariを起動
+            if (result) {
+                if(isFrame && (([url indexOf:@"http://"] == 0) || ([url indexOf:@"https://"] == 0))){
+                    if(self.openURLBrowser){
+                        [([UIApplication sharedApplication]) openURL:[NSURL URLWithString:url]];
+                        return YES;
+                    }
+                }
+                // ページ内リンクの場合はインジケーターを表示しない
+                if([url indexOf:@"#"] >= 0){
+                    return YES;
+                }
+            }
+            // 読み込みをハックする
+            if(callback && [callback respondsToSelector:@selector(callWebViewRequestURL:request:navigationType:)]){
+                result = [callback callWebViewRequestURL:self request:request navigationType:navigationType];
             }
         }
-        // ページ内リンクの場合はインジケーターを表示しない
-        if([url indexOf:@"#"] >= 0){
-            return YES;
-        }
-        // 読み込みをハックする
-        if(callback && [callback respondsToSelector:@selector(callWebViewRequestURL:request:navigationType:)]){
-            return [callback callWebViewRequestURL:self request:request navigationType:navigationType];
-        }
     }
-    retainCount ++;
-    return YES;
+    if (result) {
+        retainCount ++;
+    }
+    return result;
 }
 // アプリケーションリンクか調べる
 -(BOOL)isApplicationURL:(NSString *)url{

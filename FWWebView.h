@@ -85,9 +85,9 @@
 // メソッドのコール(JSからのコール)
 -(BOOL) callWebViewMethodJS : (FWWebView *)view method:(NSString *)method param:(NSObject*)params;
 // ページクリック時のメソッド
--(BOOL) bindWebViewClickURL : (FWWebView *)webView request:(NSURLRequest *)request;
+-(BOOL) bindWebViewClickURL : (FWWebView *)webView request:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType;
 // ページ読み込み時のメソッド
--(BOOL) callWebViewRequestURL : (FWWebView *)webView request:(NSURLRequest *)request;
+-(BOOL) callWebViewRequestURL : (FWWebView *)webView request:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType;
 // DOMのonload時に呼ばれる
 -(void) callWebViewOnLoaded : (FWWebView *)webView;
 // DOMのonload失敗時に呼ばれる

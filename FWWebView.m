@@ -487,8 +487,8 @@
         // リクエストからURL文字列取得
         NSString* url = [[request URL] relativeString];
         // 読み込みをハックする
-        if(callback && [callback respondsToSelector:@selector(bindWebViewClickURL:request:)]){
-            return [callback bindWebViewClickURL:self request:request];
+        if(callback && [callback respondsToSelector:@selector(bindWebViewClickURL:request:navigationType:)]){
+            return [callback bindWebViewClickURL:self request:request navigationType:navigationType];
         }
         // アプリケーションの起動
         if([self isApplicationURL:url]){
@@ -506,8 +506,8 @@
             return YES;
         }
         // 読み込みをハックする
-        if(callback && [callback respondsToSelector:@selector(callWebViewRequestURL:request:)]){
-            return [callback callWebViewRequestURL:self request:request];
+        if(callback && [callback respondsToSelector:@selector(callWebViewRequestURL:request:navigationType:)]){
+            return [callback callWebViewRequestURL:self request:request navigationType:navigationType];
         }
     }
     retainCount ++;

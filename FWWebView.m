@@ -243,6 +243,7 @@
     }
     
     // リクエストされたURLを保存
+    retainCount = 0;
     nowURL = nil;
     nowURL = [[req URL] relativeString];
     requestData = nil;

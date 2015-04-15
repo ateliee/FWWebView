@@ -28,6 +28,8 @@
     BOOL pauseScroll;
     CGPoint scrollOrigin;
     CGPoint defaultScrollOrigin;
+    
+    NSURLRequest *currentRequest;
 }
 // 初期化
 -(void) initalization;
@@ -519,6 +521,7 @@
     if (result) {
         retainCount ++;
     }
+    currentRequest = request;
     return result;
 }
 // アプリケーションリンクか調べる
@@ -540,7 +543,8 @@
     // デリゲートメソッドを呼び出し
     if (blankLoad) {
         blankLoad = FALSE;
-    }else if(retainCount == 0){
+        //}else if(retainCount <= 0){
+    }else{
         [((FWWebView *)webView) finishWebPage];
     }
 }

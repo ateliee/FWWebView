@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'FWWebView'
-  s.version      = '1.1.2'
+  s.version      = '1.1.3'
   s.summary      = 'UIWevview Update Class.'
   s.description  = <<-DESC
                    this class is UIWebview native and html connection support.
@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
     LICENSE
   }
   s.platform     = :ios, '5.0'
-  s.source       = { :git => 'https://github.com/ateliee/FWWebView.git', :tag => '1.1.2' }
+  s.source       = { :git => 'https://github.com/ateliee/FWWebView.git', :tag => '1.1.3' }
   s.source_files  = 'Classes', '*.{h,m}'
   s.requires_arc  = true
   s.dependencies = { 'IOSHelper' => '>= 1.0.1' } 
